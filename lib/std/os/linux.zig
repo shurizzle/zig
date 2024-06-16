@@ -7209,6 +7209,11 @@ pub const PTRACE = struct {
     pub const GET_SYSCALL_INFO = 0x420e;
 };
 
+pub const _SC = struct {
+    pub const PAGESIZE = 30;
+    pub const PAGE_SIZE = PAGESIZE;
+};
+
 /// A waiter for vectorized wait.
 pub const futex_waitv = extern struct {
     // Expected value at uaddr

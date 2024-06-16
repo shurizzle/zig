@@ -1422,6 +1422,11 @@ pub const HW = struct {
     pub const POWER = 26;
 };
 
+pub const _SC = struct {
+    pub const PAGESIZE = 28;
+    pub const PAGE_SIZE = PAGESIZE;
+};
+
 pub const PTHREAD_STACK_MIN = switch (builtin.cpu.arch) {
     .sparc64 => 1 << 13,
     .mips64 => 1 << 14,

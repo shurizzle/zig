@@ -2769,6 +2769,11 @@ pub const PT = struct {
     pub const DENY_ATTACH = 31;
 };
 
+pub const _SC = struct {
+    pub const PAGESIZE = 29;
+    pub const PAGE_SIZE = PAGESIZE;
+};
+
 pub const caddr_t = ?[*]u8;
 
 pub extern "c" fn ptrace(request: c_int, pid: pid_t, addr: caddr_t, data: c_int) c_int;

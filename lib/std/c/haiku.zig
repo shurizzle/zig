@@ -1386,6 +1386,11 @@ pub const itimerspec = extern struct {
     value: timespec,
 };
 
+pub const _SC = struct {
+    pub const PAGESIZE = 27;
+    pub const PAGE_SIZE = PAGESIZE;
+};
+
 // /system/develop/headers/private/system/syscalls.h
 
 pub extern "root" fn _kern_get_current_team() team_id;

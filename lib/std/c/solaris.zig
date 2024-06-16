@@ -1597,6 +1597,8 @@ pub const AF_SUN = struct {
 // TODO: Add sysconf numbers when the other OSs do.
 pub const _SC = struct {
     pub const NPROCESSORS_ONLN = 15;
+    pub const PAGESIZE = 11;
+    pub const PAGE_SIZE = PAGESIZE;
 };
 
 pub const procfs = struct {

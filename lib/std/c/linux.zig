@@ -96,6 +96,7 @@ pub const user_desc = linux.user_desc;
 pub const utsname = linux.utsname;
 pub const winsize = linux.winsize;
 pub const PR = linux.PR;
+pub const _SC = linux._SC;
 
 pub const _errno = switch (native_abi) {
     .android => struct {

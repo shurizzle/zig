@@ -1368,3 +1368,8 @@ pub const POLL = struct {
     pub const HUP = 0x0010;
     pub const NVAL = 0x0020;
 };
+
+pub const _SC = struct {
+    pub const PAGESIZE = 28;
+    pub const PAGE_SIZE = PAGESIZE;
+};
