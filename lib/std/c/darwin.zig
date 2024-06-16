@@ -177,6 +177,7 @@ pub extern "c" fn mach_timebase_info(tinfo: ?*mach_timebase_info_data) kern_retu
 
 pub extern "c" fn malloc_size(?*const anyopaque) usize;
 pub extern "c" fn posix_memalign(memptr: *?*anyopaque, alignment: usize, size: usize) c_int;
+pub extern "c" fn sysconf(sc: c_int) c_long;
 
 pub extern "c" fn kevent64(
     kq: c_int,

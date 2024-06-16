@@ -21,6 +21,7 @@ pub extern "c" fn dl_iterate_phdr(callback: dl_iterate_phdr_callback, data: ?*an
 pub extern "c" fn lwp_gettid() c_int;
 
 pub extern "c" fn posix_memalign(memptr: *?*anyopaque, alignment: usize, size: usize) c_int;
+pub extern "c" fn sysconf(sc: c_int) c_long;
 
 pub const pthread_attr_t = extern struct { // copied from freebsd
     __size: [56]u8,

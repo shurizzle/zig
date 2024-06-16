@@ -20,6 +20,7 @@ pub extern "c" fn arc4random_buf(buf: [*]u8, len: usize) void;
 
 pub extern "c" fn posix_memalign(memptr: *?*anyopaque, alignment: usize, size: usize) c_int;
 pub extern "c" fn malloc_usable_size(?*const anyopaque) usize;
+pub extern "c" fn sysconf(sc: c_int) c_long;
 
 pub extern "c" fn getpid() pid_t;
 

@@ -30,6 +30,7 @@ pub const pthread_key_t = c_int;
 pub const sem_t = ?*opaque {};
 
 pub extern "c" fn posix_memalign(memptr: *?*anyopaque, alignment: usize, size: usize) c_int;
+pub extern "c" fn sysconf(sc: c_int) c_long;
 
 pub extern "c" fn pledge(promises: ?[*:0]const u8, execpromises: ?[*:0]const u8) c_int;
 pub extern "c" fn unveil(path: ?[*:0]const u8, permissions: ?[*:0]const u8) c_int;
