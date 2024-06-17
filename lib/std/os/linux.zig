@@ -7252,3 +7252,36 @@ pub const SHADOW_STACK = struct {
     /// Set up a restore token in the shadow stack.
     pub const SET_TOKEN: u64 = 1 << 0;
 };
+
+pub usingnamespace if (!builtin.link_libc) struct {
+    pub fn computePageSize() usize {
+        const max_size: usize = 256 << 10;
+
+        switch (getauxval(std.elf.AT_PAGESZ)) {
+            0 => {},
+            else => |sz| return sz,
+        }
+
+        const ret = mmap(null, max_size, PROT.READ | PROT.WRITE, .{ .TYPE = MAP_TYPE.PRIVATE, .ANONYMOUS = true }, -1, 0);
+        const p: [*]u8 = switch (std.posix.errno(ret)) {
+            .SUCCESS => @ptrFromInt(ret),
+            else => @panic("Cannot retrieve page size"),
+        };
+        defer _ = munmap(p, max_size);
+
+        var n: usize = 4 << 10;
+        var size: usize = 0;
+        var addrspace_vec = [1]u8{0};
+        while (n < max_size) : (n <<= 1) {
+            if (mincore(p + n, 1, &addrspace_vec) == 0) {
+                size = n;
+                break;
+            }
+        }
+
+        if (size == 0) {
+            size = max_size;
+        }
+        return size;
+    }
+} else struct {};

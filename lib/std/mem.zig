@@ -4601,3 +4601,42 @@ test "read/write(Var)PackedInt" {
         }
     }
 }
+
+pub usingnamespace pgsz: {
+    const module = switch (builtin.os.tag) {
+        .linux => std.os.linux,
+        .plan9 => std.os.plan9,
+        else => struct {},
+    };
+
+    const default_page_size: usize = switch (builtin.cpu.arch) {
+        .wasm32, .wasm64 => std.wasm.page_size,
+        .aarch64 => switch (builtin.os.tag) {
+            .macos, .ios, .watchos, .tvos, .visionos => 16 * 1024,
+            else => 4 * 1024,
+        },
+        .sparc64 => 8 * 1024,
+        else => 4 * 1024,
+    };
+
+    break :pgsz if (@hasDecl(module, "computePageSize")) struct {
+        var _PAGE_SIZE: std.atomic.Value(usize) = std.atomic.Value(usize).init(0);
+
+        pub inline fn getPageSize() usize {
+            var res = _PAGE_SIZE.load(.unordered);
+            if (res == 0) {
+                res = module.computePageSize();
+                _PAGE_SIZE.store(res, .release);
+            }
+            return res;
+        }
+    } else if (@hasDecl(std.c, "sysconf") and @hasDecl(std.c, "_SC") and @hasDecl(std.c._SC, "PAGESIZE")) struct {
+        pub inline fn getPageSize() usize {
+            return @bitCast(std.c.sysconf(std.c._SC.PAGESIZE));
+        }
+    } else struct {
+        pub inline fn getPageSize() usize {
+            return default_page_size;
+        }
+    };
+};

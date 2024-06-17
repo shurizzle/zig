@@ -377,3 +377,44 @@ pub fn sbrk(n: usize) usize {
     bloc = bloc + n_aligned;
     return bl;
 }
+
+pub fn computePageSize() usize {
+    const min_size: usize = 4096;
+    const devswap: [*:0]const u8 = "/dev/swap\x00";
+    const pagesize: []const u8 = " pagesize";
+
+    var buf: [2048]u8 = undefined;
+    var pos: usize = 0;
+    {
+        const ret = open(devswap, @bitCast(O{ .access = .RDONLY }));
+        const fd: i32 = switch (E.init(ret)) {
+            .SUCCESS => @bitCast(@as(u32, @intCast(ret))),
+            else => return min_size,
+        };
+        defer _ = close(fd);
+
+        while (pos < buf.len) {
+            const n = read(fd, @ptrCast(&buf[pos]), buf.len - pos);
+            if (E.init(n) != .SUCCESS or n == 0) {
+                break;
+            }
+            pos += n;
+        }
+    }
+    var lines = std.mem.splitScalar(u8, buf[0..pos], '\n');
+
+    while (lines.next()) |l| {
+        var line = if (l.len > 0 and l[l.len - 1] == '\r') l[0..(l.len - 1)] else l;
+
+        if (!std.mem.endsWith(u8, line, pagesize)) {
+            continue;
+        }
+        line = line[0..(line.len - pagesize.len)];
+
+        if (std.fmt.parseInt(usize, line, 10) catch null) |n| {
+            return n;
+        }
+    }
+
+    return min_size;
+}
